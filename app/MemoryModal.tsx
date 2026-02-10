@@ -20,13 +20,46 @@ export default function MemoryModal({ memory, onClose, onNextMemory, onPrevMemor
     const [currentIndex, setCurrentIndex] = useState(0);
     const [direction, setDirection] = useState(0);
     const [sparkles, setSparkles] = useState<Array<{ id: number; x: number; y: number; size: number }>>([]);
+    const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set());
+    const [isCurrentLoading, setIsCurrentLoading] = useState(false);
     const touchStartX = useRef(0);
     const touchEndX = useRef(0);
 
-    // Reset index when memory changes
+    // Reset index and preload ALL images when memory changes
     useEffect(() => {
         if (memory) {
             setCurrentIndex(0);
+            setLoadedImages(new Set());
+            setIsCurrentLoading(true);
+
+            // Preload all images in this memory
+            memory.images.forEach((src, index) => {
+                const img = new Image();
+                img.onload = () => {
+                    setLoadedImages(prev => {
+                        const next = new Set(prev);
+                        next.add(index);
+                        return next;
+                    });
+                    // If this is the first image, mark as loaded immediately
+                    if (index === 0) {
+                        setIsCurrentLoading(false);
+                    }
+                };
+                img.onerror = () => {
+                    // Even on error, mark as "loaded" to not block navigation
+                    setLoadedImages(prev => {
+                        const next = new Set(prev);
+                        next.add(index);
+                        return next;
+                    });
+                    if (index === 0) {
+                        setIsCurrentLoading(false);
+                    }
+                };
+                img.src = src;
+            });
+
             // Generate sparkles on open
             const newSparkles = Array.from({ length: 20 }, (_, i) => ({
                 id: Date.now() + i,
@@ -39,17 +72,26 @@ export default function MemoryModal({ memory, onClose, onNextMemory, onPrevMemor
         }
     }, [memory]);
 
+    // Track loading state for current slide
+    useEffect(() => {
+        if (memory) {
+            setIsCurrentLoading(!loadedImages.has(currentIndex));
+        }
+    }, [currentIndex, loadedImages, memory]);
+
     const goNext = useCallback(() => {
         if (!memory) return;
+        const nextIndex = (currentIndex + 1) % memory.images.length;
         setDirection(1);
-        setCurrentIndex((prev) => (prev + 1) % memory.images.length);
-    }, [memory]);
+        setCurrentIndex(nextIndex);
+    }, [memory, currentIndex]);
 
     const goPrev = useCallback(() => {
         if (!memory) return;
+        const prevIndex = (currentIndex - 1 + memory.images.length) % memory.images.length;
         setDirection(-1);
-        setCurrentIndex((prev) => (prev - 1 + memory.images.length) % memory.images.length);
-    }, [memory]);
+        setCurrentIndex(prevIndex);
+    }, [memory, currentIndex]);
 
     // Keyboard navigation
     useEffect(() => {
@@ -211,11 +253,17 @@ export default function MemoryModal({ memory, onClose, onNextMemory, onPrevMemor
                                     exit="exit"
                                     transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                                 >
+                                    {isCurrentLoading && (
+                                        <div className="memory-loading-overlay">
+                                            <div className="memory-loading-spinner" />
+                                        </div>
+                                    )}
                                     <img
                                         src={memory.images[currentIndex]}
                                         alt={`${memory.title} - Photo ${currentIndex + 1}`}
                                         className="memory-main-image"
                                         draggable={false}
+                                        style={{ opacity: isCurrentLoading ? 0 : 1, transition: 'opacity 0.3s ease' }}
                                     />
                                 </motion.div>
                             </AnimatePresence>

@@ -36,6 +36,7 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-snap-type: y proximity;
 }
 
 body {
@@ -86,12 +87,82 @@ body {
   /* Prevent horizontal overflow */
   max-width: 100vw;
   overflow-x: hidden;
+  scroll-snap-align: start;
+}
+
+/* Gradient transition overlays between sections */
+.section::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 120px;
+  background: linear-gradient(to bottom,
+      transparent 0%,
+      rgba(255, 245, 247, 0.4) 40%,
+      rgba(255, 245, 247, 0.8) 70%,
+      var(--bg-cream) 100%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Top fade-in for sections after the first */
+.section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: linear-gradient(to top,
+      transparent 0%,
+      rgba(255, 245, 247, 0.3) 50%,
+      rgba(255, 245, 247, 0.6) 100%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Hero section - no top fade */
+.hero::before {
+  display: none;
+}
+
+/* Finale section - no bottom fade */
+.finale::after {
+  display: none;
+}
+
+/* Section reveal animation on scroll */
+.section>*:not(.section-gradient) {
+  animation: sectionReveal 0.8s ease-out both;
+}
+
+@keyframes sectionReveal {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (max-width: 768px) {
   .section {
     min-height: auto;
     padding: 40px 16px;
+  }
+
+  /* Smaller gradient overlays on mobile */
+  .section::after {
+    height: 80px;
+  }
+
+  .section::before {
+    height: 50px;
   }
 
   /* Reduce vignette on mobile */
@@ -2682,4 +2753,89 @@ body {
   .dump-title-tagline {
     font-size: 1rem;
   }
+}
+
+/* ===========================================
+   MEMORY LOADING SPINNER
+   =========================================== */
+
+.memory-loading-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.memory-loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  border-top-color: rgba(244, 163, 196, 0.9);
+  border-radius: 50%;
+  animation: spinLoader 0.7s linear infinite;
+}
+
+@keyframes spinLoader {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ===========================================
+   OPENING OVERLAY
+   =========================================== */
+
+.opening-overlay {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.opening-card {
+  background: white;
+  padding: 40px 60px;
+  border-radius: 20px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(236, 72, 153, 0.3);
+  max-width: 90%;
+  width: 400px;
+}
+
+.opening-title {
+  font-family: var(--font-heading);
+  font-size: 3rem;
+  color: #db2777;
+  margin-bottom: 8px;
+}
+
+.opening-subtitle {
+  font-family: var(--font-body);
+  font-size: 1.2rem;
+  color: #6b7280;
+  margin-bottom: 32px;
+}
+
+.opening-btn {
+  background: #db2777;
+  color: white;
+  border: none;
+  padding: 12px 32px;
+  border-radius: 50px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(219, 39, 119, 0.4);
+}
+
+.opening-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 20px rgba(219, 39, 119, 0.6);
+  background: #ec4899;
 }

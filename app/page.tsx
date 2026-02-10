@@ -60,7 +60,26 @@ export default function BirthdayScrapbook() {
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
   const [selectedMemory, setSelectedMemory] = useState<MemoryEvent | null>(null);
   const [wasPlayingBeforeVlog, setWasPlayingBeforeVlog] = useState(false);
+  const [showOverlay, setShowOverlay] = useState(true);
   const audioRef = useRef<HTMLAudioElement>(null);
+
+  const handleStart = () => {
+    if (audioRef.current) {
+      audioRef.current.volume = 0.25;
+      audioRef.current.play()
+        .then(() => {
+          setIsPlaying(true);
+          setShowOverlay(false);
+          triggerConfetti();
+        })
+        .catch(console.error);
+    } else {
+      setShowOverlay(false);
+    }
+  };
+
+  // No more auto-play useEffect needed since we use the overlay
+
 
   const handleVlogPlay = () => {
     if (audioRef.current && !audioRef.current.paused) {
@@ -169,324 +188,353 @@ export default function BirthdayScrapbook() {
       {/* Grid Background */}
       <div className="scrapbook-bg" />
 
-      {/* Audio */}
-      <audio ref={audioRef} src="/birthday-music.mp3" loop />
-
-      {/* Dot Navigation */}
-      <nav className="dot-nav">
-        {sections.map((section) => (
-          <button
-            key={section.id}
-            className={`dot ${activeSection === section.id ? "active" : ""}`}
-            onClick={() => scrollToSection(section.id)}
-            aria-label={section.label}
-          >
-            <span className="dot-label">{section.label}</span>
-          </button>
-        ))}
-      </nav>
-
-      {/* Audio Player */}
-      <button className="audio-player" onClick={toggleAudio}>
-        <span className="audio-icon">{isPlaying ? "🔊" : "🔇"}</span>
-        <span className="audio-text">{isPlaying ? "Playing..." : "Play Music"}</span>
-      </button>
-
-      {/* ================== HERO SECTION ================== */}
-      <section id="hero" className="section hero">
-        <span className="deco-heart">❤️</span>
-        <div className="deco-arrow" />
-        <span className="deco-star">⭐</span>
-        <div className="deco-pink-arrow" />
-
-        <motion.div
-          className="hero-content"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-        >
-          {/* Polaroid with real profile picture */}
+      {/* Opening Overlay */}
+      <AnimatePresence>
+        {showOverlay && (
           <motion.div
-            className="polaroid"
-            initial={{ opacity: 0, rotate: -10 }}
-            animate={{ opacity: 1, rotate: -3 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
+            className="opening-overlay"
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.8 }}
           >
-            <div className="polaroid-tape" />
-            <div className="polaroid-image">
-              {profilePicture ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={profilePicture}
-                  alt="Nurul Fauzia Rusdi"
-                  className="polaroid-photo"
-                />
-              ) : (
-                <span style={{ fontSize: 80 }}>👩</span>
-              )}
+            <motion.div
+              className="opening-card"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              <h1 className="opening-title">For Zia ✨</h1>
+              <p className="opening-subtitle">A little surprise for you...</p>
+              <button className="opening-btn" onClick={handleStart}>
+                Open 💌
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Main Content (hidden until opened or behind overlay) */}
+      <div style={{ opacity: showOverlay ? 0 : 1, transition: 'opacity 1s ease 0.5s' }}>
+
+
+        {/* Audio */}
+        <audio ref={audioRef} src="/birthday-music.mp3" loop />
+
+        {/* Dot Navigation */}
+        <nav className="dot-nav">
+          {sections.map((section) => (
+            <button
+              key={section.id}
+              className={`dot ${activeSection === section.id ? "active" : ""}`}
+              onClick={() => scrollToSection(section.id)}
+              aria-label={section.label}
+            >
+              <span className="dot-label">{section.label}</span>
+            </button>
+          ))}
+        </nav>
+
+        {/* Audio Player */}
+        <button className="audio-player" onClick={toggleAudio}>
+          <span className="audio-icon">{isPlaying ? "🔊" : "🔇"}</span>
+          <span className="audio-text">{isPlaying ? "Playing..." : "Play Music"}</span>
+        </button>
+
+        {/* ================== HERO SECTION ================== */}
+        <section id="hero" className="section hero">
+          <span className="deco-heart">❤️</span>
+          <div className="deco-arrow" />
+          <span className="deco-star">⭐</span>
+          <div className="deco-pink-arrow" />
+
+          <motion.div
+            className="hero-content"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          >
+            {/* Polaroid with real profile picture */}
+            <motion.div
+              className="polaroid"
+              initial={{ opacity: 0, rotate: -10 }}
+              animate={{ opacity: 1, rotate: -3 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              <div className="polaroid-tape" />
+              <div className="polaroid-image">
+                {profilePicture ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={profilePicture}
+                    alt="Nurul Fauzia Rusdi"
+                    className="polaroid-photo"
+                  />
+                ) : (
+                  <span style={{ fontSize: 80 }}>👩</span>
+                )}
+              </div>
+              <span className="polaroid-caption">Nurul Fauzia Rusdi 🎀✨</span>
+            </motion.div>
+
+            {/* Text Content */}
+            <div className="hero-text">
+              <motion.div
+                className="today-line"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+              >
+                <span className="today-badge">Today</span>
+                <span className="today-suffix">is your birthday</span>
+              </motion.div>
+
+              <motion.h1
+                className="hero-title"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+              >
+                Happy<br />
+                <span className="birthday">Birthday Zia</span>
+              </motion.h1>
+
+              <motion.div
+                className="hero-name-line"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.45 }}
+              >
+                <span className="hero-full-name">from your beloved best friend&lt;3</span>
+              </motion.div>
+
+              <motion.div
+                className="quote-box"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.5 }}
+              >
+                <p className="quote-text">
+                  &quot;Another year of adventures, laughter, and making beautiful memories.&quot;
+                </p>
+              </motion.div>
+
+              <motion.div
+                className="hashtags"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.6 }}
+              >
+                <span className="hashtag blue">#Celebration</span>
+                <span className="hashtag pink">#Memories</span>
+                <span className="hashtag yellow">#ziaultah</span>
+                <span className="hashtag purple">#ngucapintelat</span>
+              </motion.div>
             </div>
-            <span className="polaroid-caption">Nurul Fauzia Rusdi 🎀✨</span>
           </motion.div>
 
-          {/* Text Content */}
-          <div className="hero-text">
-            <motion.div
-              className="today-line"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-            >
-              <span className="today-badge">Today</span>
-              <span className="today-suffix">is your birthday</span>
-            </motion.div>
+          <div className="scroll-indicator">↓</div>
+        </section>
 
-            <motion.h1
-              className="hero-title"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-            >
-              Happy<br />
-              <span className="birthday">Birthday Zia</span>
-            </motion.h1>
+        {/* ================== INTRO SECTION ================== */}
+        <IntroSection />
 
-            <motion.div
-              className="hero-name-line"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.45 }}
-            >
-              <span className="hero-full-name">from your beloved best friend&lt;3</span>
-            </motion.div>
+        {/* ================== MEMORIES SECTION ================== */}
+        <MemoriesSection memories={memories} onSelectMemory={setSelectedMemory} />
 
-            <motion.div
-              className="quote-box"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-            >
-              <p className="quote-text">
-                &quot;Another year of adventures, laughter, and making beautiful memories.&quot;
-              </p>
-            </motion.div>
+        {/* ================== CUTE BEST VLOG SECTION ================== */}
+        <CinematicVlogSection onPlay={handleVlogPlay} onStop={handleVlogStop} />
 
-            <motion.div
-              className="hashtags"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5, delay: 0.6 }}
-            >
-              <span className="hashtag blue">#Celebration</span>
-              <span className="hashtag pink">#Memories</span>
-              <span className="hashtag yellow">#ziaultah</span>
-              <span className="hashtag purple">#ngucapintelat</span>
-            </motion.div>
-          </div>
-        </motion.div>
+        {/* ================== VLOG DUMP TITLE SECTION ================== */}
+        <DumpTitleSection />
 
-        <div className="scroll-indicator">↓</div>
-      </section>
+        {/* ================== VLOG DUMP VIDEOS SECTION ================== */}
+        <VlogDumpSection onPlay={handleVlogPlay} onStop={handleVlogStop} />
 
-      {/* ================== INTRO SECTION ================== */}
-      <IntroSection />
+        {/* ================== REKOM NOTE SECTION ================== */}
+        <RekomSection />
 
-      {/* ================== MEMORIES SECTION ================== */}
-      <MemoriesSection memories={memories} onSelectMemory={setSelectedMemory} />
+        {/* ================== WISHES SECTION ================== */}
+        <section id="wishes" className="section wishes">
+          <motion.h2
+            className="wishes-title"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            ✏️ The Writing Desk
+          </motion.h2>
+          <motion.p
+            className="wishes-subtitle"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            Click a pencil to read a birthday wish
+          </motion.p>
 
-      {/* ================== CUTE BEST VLOG SECTION ================== */}
-      <CinematicVlogSection onPlay={handleVlogPlay} onStop={handleVlogStop} />
-
-      {/* ================== VLOG DUMP TITLE SECTION ================== */}
-      <DumpTitleSection />
-
-      {/* ================== VLOG DUMP VIDEOS SECTION ================== */}
-      <VlogDumpSection onPlay={handleVlogPlay} onStop={handleVlogStop} />
-
-      {/* ================== REKOM NOTE SECTION ================== */}
-      <RekomSection />
-
-      {/* ================== WISHES SECTION ================== */}
-      <section id="wishes" className="section wishes">
-        <motion.h2
-          className="wishes-title"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
-          ✏️ The Writing Desk
-        </motion.h2>
-        <motion.p
-          className="wishes-subtitle"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
-          Click a pencil to read a birthday wish
-        </motion.p>
-
-        <motion.div
-          className="pencil-desk"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-        >
-          {pencils.map((pencil, i) => (
-            <motion.div
-              key={pencil.name}
-              className="pencil"
-              onClick={() => setSelectedWish(pencil)}
-              style={{ transform: `rotate(${(i - 7) * 3}deg)` }}
-              whileHover={{ scale: 1.1, y: -10 }}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.3, delay: i * 0.05 }}
-            >
-              <div
-                className="pencil-tip"
-                style={{ borderBottomColor: pencil.color }}
-              />
-              <div
-                className="pencil-body"
-                style={{ backgroundColor: pencil.color }}
-              >
-                <span className="pencil-label">{pencil.name}</span>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        {/* Wish Modal */}
-        <AnimatePresence>
-          {selectedWish && (
-            <motion.div
-              className="modal-overlay"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setSelectedWish(null)}
-            >
+          <motion.div
+            className="pencil-desk"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
+            {pencils.map((pencil, i) => (
               <motion.div
-                className="wish-modal"
-                initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                onClick={(e) => e.stopPropagation()}
+                key={pencil.name}
+                className="pencil"
+                onClick={() => setSelectedWish(pencil)}
+                style={{ transform: `rotate(${(i - 7) * 3}deg)` }}
+                whileHover={{ scale: 1.1, y: -10 }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.3, delay: i * 0.05 }}
               >
-                <button className="modal-close" onClick={() => setSelectedWish(null)}>×</button>
-                <h3 className="wish-modal-title">Message from {selectedWish.name}</h3>
-                <p className="wish-modal-text">{selectedWish.message}</p>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </section>
-
-      {/* ================== FINALE SECTION ================== */}
-      <section id="finale" className="section finale" onClick={triggerConfetti}>
-        <motion.h2
-          className="finale-title"
-          initial={{ opacity: 0, scale: 0.8 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-        >
-          The End
-        </motion.h2>
-
-        <motion.p
-          className="finale-subtitle"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
-          OF THE PAGE, NOT THE FUN!
-        </motion.p>
-
-        <motion.div
-          className="banner-container"
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-        >
-          {/* String */}
-          <div className="banner-string">
-            <svg viewBox="0 0 500 40" preserveAspectRatio="none">
-              <path
-                d="M 0 5 Q 125 35, 250 5 T 500 5"
-                fill="none"
-                stroke="#6b7280"
-                strokeWidth="2"
-              />
-            </svg>
-          </div>
-
-          {/* Cards */}
-          <div className="banner-cards">
-            {bannerLetters.map((letter, i) => (
-              letter === " " ? (
-                <div key={i} style={{ width: "20px" }} />
-              ) : (
-                <motion.div
-                  key={i}
-                  className="banner-card"
-                  initial={{ opacity: 0, y: -20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: 0.4 + i * 0.1 }}
+                <div
+                  className="pencil-tip"
+                  style={{ borderBottomColor: pencil.color }}
+                />
+                <div
+                  className="pencil-body"
+                  style={{ backgroundColor: pencil.color }}
                 >
-                  {letter}
+                  <span className="pencil-label">{pencil.name}</span>
+                </div>
+              </motion.div>
+            ))}
+          </motion.div>
+
+          {/* Wish Modal */}
+          <AnimatePresence>
+            {selectedWish && (
+              <motion.div
+                className="modal-overlay"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setSelectedWish(null)}
+              >
+                <motion.div
+                  className="wish-modal"
+                  initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <button className="modal-close" onClick={() => setSelectedWish(null)}>×</button>
+                  <h3 className="wish-modal-title">Message from {selectedWish.name}</h3>
+                  <p className="wish-modal-text">{selectedWish.message}</p>
                 </motion.div>
-              )
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </section>
+
+        {/* ================== FINALE SECTION ================== */}
+        <section id="finale" className="section finale" onClick={triggerConfetti}>
+          <motion.h2
+            className="finale-title"
+            initial={{ opacity: 0, scale: 0.8 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            The End
+          </motion.h2>
+
+          <motion.p
+            className="finale-subtitle"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            OF THE PAGE, NOT THE FUN!
+          </motion.p>
+
+          <motion.div
+            className="banner-container"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
+            {/* String */}
+            <div className="banner-string">
+              <svg viewBox="0 0 500 40" preserveAspectRatio="none">
+                <path
+                  d="M 0 5 Q 125 35, 250 5 T 500 5"
+                  fill="none"
+                  stroke="#6b7280"
+                  strokeWidth="2"
+                />
+              </svg>
+            </div>
+
+            {/* Cards */}
+            <div className="banner-cards">
+              {bannerLetters.map((letter, i) => (
+                letter === " " ? (
+                  <div key={i} style={{ width: "20px" }} />
+                ) : (
+                  <motion.div
+                    key={i}
+                    className="banner-card"
+                    initial={{ opacity: 0, y: -20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: 0.4 + i * 0.1 }}
+                  >
+                    {letter}
+                  </motion.div>
+                )
+              ))}
+            </div>
+          </motion.div>
+
+          <motion.p
+            className="tap-hint"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 1.2 }}
+          >
+            ✨( tap the lights )✨
+          </motion.p>
+
+          <p className="footer">HANDCRAFTED WITH ❤️</p>
+        </section>
+
+        {/* Confetti */}
+        {confetti.length > 0 && (
+          <div className="confetti-container">
+            {confetti.map((piece) => (
+              <div
+                key={piece.id}
+                className="confetti"
+                style={{
+                  left: piece.x,
+                  top: piece.y,
+                  backgroundColor: piece.color,
+                  animationDelay: `${Math.random() * 0.5}s`,
+                }}
+              />
             ))}
           </div>
-        </motion.div>
-
-        <motion.p
-          className="tap-hint"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 1.2 }}
-        >
-          ✨( tap the lights )✨
-        </motion.p>
-
-        <p className="footer">HANDCRAFTED WITH ❤️</p>
-      </section>
-
-      {/* Confetti */}
-      {confetti.length > 0 && (
-        <div className="confetti-container">
-          {confetti.map((piece) => (
-            <div
-              key={piece.id}
-              className="confetti"
-              style={{
-                left: piece.x,
-                top: piece.y,
-                backgroundColor: piece.color,
-                animationDelay: `${Math.random() * 0.5}s`,
-              }}
-            />
-          ))}
-        </div>
-      )}
+        )}
 
 
 
-      {/* Memory Lightbox Modal */}
-      <MemoryModal
-        memory={selectedMemory}
-        onClose={() => setSelectedMemory(null)}
-        onNextMemory={handleNextMemory}
-        onPrevMemory={handlePrevMemory}
-      />
+        <MemoryModal
+          memory={selectedMemory}
+          onClose={() => setSelectedMemory(null)}
+          onNextMemory={handleNextMemory}
+          onPrevMemory={handlePrevMemory}
+        />
+      </div>
     </>
   );
 }
@@ -576,7 +624,9 @@ function MemoriesSection({
                   src={memory.images[0]}
                   alt={memory.title}
                   className="memory-photo"
-                  loading="lazy"
+                  loading={i < 6 ? "eager" : "lazy"}
+                  fetchPriority={i < 6 ? "high" : "auto"}
+                  decoding={i < 6 ? "sync" : "async"}
                 />
               </div>
               <div className="memory-info">
