@@ -35,7 +35,7 @@ export function useConfetti() {
             cleanupRef.current();
         }
 
-        cleanupRef.current = createConfettiBurst(canvasRef.current, centerX, centerY);
+        cleanupRef.current = createConfettiBurst(canvasRef.current, centerX, centerY) ?? null;
     }, []);
 
     const triggerSparkles = useCallback((duration?: number) => {
