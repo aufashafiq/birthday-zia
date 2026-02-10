@@ -7,6 +7,7 @@ import CinematicVlogSection from "./CinematicVlogSection";
 import DumpTitleSection from "./DumpTitleSection";
 import VlogDumpSection from "./VlogDumpSection";
 import RekomSection from "./RekomSection";
+import LetterSection from "./LetterSection";
 
 // Types
 interface MemoryEvent {
@@ -60,6 +61,7 @@ export default function BirthdayScrapbook() {
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
   const [selectedMemory, setSelectedMemory] = useState<MemoryEvent | null>(null);
   const [wasPlayingBeforeVlog, setWasPlayingBeforeVlog] = useState(false);
+  const [letterOpen, setLetterOpen] = useState(false);
   const [showOverlay, setShowOverlay] = useState(true);
   const audioRef = useRef<HTMLAudioElement>(null);
 
@@ -221,24 +223,28 @@ export default function BirthdayScrapbook() {
         <audio ref={audioRef} src="/birthday-music.mp3" loop />
 
         {/* Dot Navigation */}
-        <nav className="dot-nav">
-          {sections.map((section) => (
-            <button
-              key={section.id}
-              className={`dot ${activeSection === section.id ? "active" : ""}`}
-              onClick={() => scrollToSection(section.id)}
-              aria-label={section.label}
-            >
-              <span className="dot-label">{section.label}</span>
-            </button>
-          ))}
-        </nav>
+        {!letterOpen && (
+          <nav className="dot-nav">
+            {sections.map((section) => (
+              <button
+                key={section.id}
+                className={`dot ${activeSection === section.id ? "active" : ""}`}
+                onClick={() => scrollToSection(section.id)}
+                aria-label={section.label}
+              >
+                <span className="dot-label">{section.label}</span>
+              </button>
+            ))}
+          </nav>
+        )}
 
         {/* Audio Player */}
-        <button className="audio-player" onClick={toggleAudio}>
-          <span className="audio-icon">{isPlaying ? "🔊" : "🔇"}</span>
-          <span className="audio-text">{isPlaying ? "Playing..." : "Play Music"}</span>
-        </button>
+        {!letterOpen && (
+          <button className="audio-player" onClick={toggleAudio}>
+            <span className="audio-icon">{isPlaying ? "🔊" : "🔇"}</span>
+            <span className="audio-text">{isPlaying ? "Playing..." : "Play Music"}</span>
+          </button>
+        )}
 
         {/* ================== HERO SECTION ================== */}
         <section id="hero" className="section hero">
@@ -525,6 +531,19 @@ export default function BirthdayScrapbook() {
             ))}
           </div>
         )}
+
+        {/* ====== LETTER SECTION (FINAL ACT) ====== */}
+        <LetterSection
+          onLetterOpen={() => {
+            // Pause birthday music when letter opens
+            if (audioRef.current && !audioRef.current.paused) {
+              audioRef.current.pause();
+              setIsPlaying(false);
+            }
+            setLetterOpen(true);
+          }}
+          onLetterClose={() => setLetterOpen(false)}
+        />
 
 
 
