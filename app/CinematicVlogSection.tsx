@@ -14,6 +14,11 @@ interface CinematicVlogSectionProps {
     onStop: () => void;
 }
 
+// Map specific filenames to custom thumbnails
+const customThumbnails: Record<string, string> = {
+    "DARI AKU BUAT KAMU ZI HEHE.MP4": "/images/dari_aku_cinematic_thumb.jpg"
+};
+
 export default function CinematicVlogSection({ onPlay, onStop }: CinematicVlogSectionProps) {
     const [videos, setVideos] = useState<VlogVideo[]>([]);
     const [playingVideo, setPlayingVideo] = useState<VlogVideo | null>(null);
@@ -77,26 +82,38 @@ export default function CinematicVlogSection({ onPlay, onStop }: CinematicVlogSe
                     <div className="vlog-content">
                         <div className="vlog-grid cinematic-grid">
                             {videos.length > 0 ? (
-                                videos.map((video) => (
-                                    <motion.div
-                                        key={video.id}
-                                        className="vlog-card cinematic"
-                                        whileHover={{ scale: 1.02 }}
-                                        whileTap={{ scale: 0.98 }}
-                                        onClick={() => handlePlay(video)}
-                                    >
-                                        <div className="video-thumbnail-wrapper">
-                                            <video
-                                                src={video.url + "#t=1"}
-                                                className="video-thumbnail"
-                                                preload="metadata"
-                                                muted
-                                            />
-                                            <div className="play-overlay">▶</div>
-                                        </div>
-                                        <span className="vlog-title">{video.filename.replace(/\.mp4$/i, "")}</span>
-                                    </motion.div>
-                                ))
+                                videos.map((video) => {
+                                    const customThumbnail = customThumbnails[video.filename];
+                                    return (
+                                        <motion.div
+                                            key={video.id}
+                                            className="vlog-card cinematic"
+                                            whileHover={{ scale: 1.02 }}
+                                            whileTap={{ scale: 0.98 }}
+                                            onClick={() => handlePlay(video)}
+                                        >
+                                            <div className="video-thumbnail-wrapper">
+                                                {customThumbnail ? (
+                                                    <img
+                                                        src={customThumbnail}
+                                                        alt={video.filename}
+                                                        className="video-thumbnail"
+                                                        style={{ objectFit: 'contain', background: '#000' }}
+                                                    />
+                                                ) : (
+                                                    <video
+                                                        src={video.url + "#t=1"}
+                                                        className="video-thumbnail"
+                                                        preload="metadata"
+                                                        muted
+                                                    />
+                                                )}
+                                                <div className="play-overlay">▶</div>
+                                            </div>
+                                            <span className="vlog-title">{video.filename.replace(/\.mp4$/i, "")}</span>
+                                        </motion.div>
+                                    );
+                                })
                             ) : (
                                 <p className="empty-msg">No cinematic videos yet!</p>
                             )}

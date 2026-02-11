@@ -7,12 +7,36 @@ interface VlogVideo {
     id: string;
     url: string;
     filename: string;
+    caption?: string; // Added caption per video
 }
 
 interface VlogDumpSectionProps {
     onPlay: () => void;
     onStop: () => void;
 }
+
+// Map specific filenames to captions for pinpoint accuracy
+const filenameToCaption: Record<string, string> = {
+    "video baru 3.mov": "nah kalo ini pas waktu aku sempro, pas disini kita ga sempro bareng, karena kamu udah duluan, hehe.",
+    "video baru 1.MP4": "nah kalo yang ini, pas waktu aku lagi bikinin hadiah buat sidang kamuu bareng sama tawes jugaa, kayaknya si tawes ini selalu ada dehh setiap aku ngerencanain sesuatu, pasti dia ngintil mulu, hahahaaa",
+    "video baru 2.MP4": "ini momen wah banget sih karena aku seneng banget ternyata surprise aku berhasil yeeyy 🎺 ganyangka bgtt taugasihh kamu sampe nangis kek gituu, semoga surprise kamu di ultah ke 24 ini berhasil juga yaa",
+};
+
+// Fallback captions for the rest of the videos
+const defaultCaptions = [
+    "ini kita lagi bikin trend tiktok ala-ala, mana pas itu kamu lagi ada kelas juga, huhu. jadi kita pakpikpuk bangett, tapi seru kokkk.",
+    "ini kita lagi gabut nunggu di kelas, lagi nunggu shooting HKP",
+    "ini kita masih di aeon, lanjut bikin trend tiktok lagi",
+    "trend tiktok (lagi), kita banyak ya ternyata bikin trend tiktok, wkwk.",
+    "inget ga sii zii yang inii? ini pas kita lagi di bandung,, bareng si itu jugalohh, (gaada maksud apa-apa yaa, hehe)",
+    "ini kita lagi di perpus buat shooting HKP, btw ini suaranya kecil bgtt gaboleh berisik soalnya",
+    "nemenin kamu sidang",
+    "Eh, ini ternyata masuk juga ya ke dalem video kenangan?? Sorry-sorry zii kepencet, hehee 😅",
+    "Farewell kamu mau pulkam :’)",
+    "ini aku lagi bikin video buat laporan ke keluarga, wkwk.",
+    "jogging di GBK lagi yukk…",
+    "Seru banget tauu kalo kita lagi ngevlog kayak ginii"
+];
 
 export default function VlogDumpSection({ onPlay, onStop }: VlogDumpSectionProps) {
     const [videos, setVideos] = useState<VlogVideo[]>([]);
@@ -23,7 +47,41 @@ export default function VlogDumpSection({ onPlay, onStop }: VlogDumpSectionProps
     useEffect(() => {
         fetch("/api/vlogs")
             .then((res) => res.json())
-            .then((data) => setVideos(data.dump || []))
+            .then((data) => {
+                let dump: VlogVideo[] = data.dump || [];
+
+                // 1. Identify "baru" videos
+                const v3 = dump.find(v => v.filename === "video baru 3.mov");
+                const v1 = dump.find(v => v.filename === "video baru 1.MP4");
+                const v2 = dump.find(v => v.filename === "video baru 2.MP4");
+
+                // 2. Identify and SORT "others" alphabetically to keep original caption mapping
+                let others = dump.filter(v =>
+                    v.filename !== "video baru 3.mov" &&
+                    v.filename !== "video baru 1.MP4" &&
+                    v.filename !== "video baru 2.MP4"
+                ).sort((a, b) => a.filename.localeCompare(b.filename));
+
+                // 3. Map original captions to 'others'
+                const othersWithCaptions = others.map((v, i) => ({
+                    ...v,
+                    caption: defaultCaptions[i] || "Captured moment... ✨"
+                }));
+
+                // 4. Map new captions to 'baru' videos
+                const v3WithCaption = v3 ? { ...v3, caption: filenameToCaption[v3.filename] } : null;
+                const v1WithCaption = v1 ? { ...v1, caption: filenameToCaption[v1.filename] } : null;
+                const v2WithCaption = v2 ? { ...v2, caption: filenameToCaption[v2.filename] } : null;
+
+                // 5. Build final order
+                const finalOrder: VlogVideo[] = [];
+                if (v3WithCaption) finalOrder.push(v3WithCaption);
+                finalOrder.push(...othersWithCaptions);
+                if (v1WithCaption) finalOrder.push(v1WithCaption);
+                if (v2WithCaption) finalOrder.push(v2WithCaption);
+
+                setVideos(finalOrder);
+            })
             .catch(console.error);
     }, []);
 
@@ -68,7 +126,7 @@ export default function VlogDumpSection({ onPlay, onStop }: VlogDumpSectionProps
                 >
 
                     <div className="vlog-content">
-                        <div className="vlog-sroll-container">
+                        <div className="vlog-scroll-container">
                             {videos.length > 0 ? (
                                 <div className="vlog-dump-track">
                                     {videos.map((video) => (
@@ -88,7 +146,13 @@ export default function VlogDumpSection({ onPlay, onStop }: VlogDumpSectionProps
                                                 />
                                                 <div className="play-overlay-small">▶</div>
                                             </div>
-                                            <span className="vlog-info">Click to play</span>
+                                            <span className="vlog-info">{video.caption}</span>
+
+                                            {/* Aesthetic Tap Badges moved below text */}
+                                            <div className="vlog-tap-badges">
+                                                <span className="tap-badge-white">Tap to Play</span>
+                                                <span className="tap-badge-pink">✨</span>
+                                            </div>
                                         </motion.div>
                                     ))}
                                 </div>
@@ -126,6 +190,12 @@ export default function VlogDumpSection({ onPlay, onStop }: VlogDumpSectionProps
                                 loop
                                 onClick={() => setIsPlaying(!isPlaying)}
                             />
+
+                            {/* Modal Caption */}
+                            <div className="modal-caption-overlay">
+                                {playingVideo.caption}
+                            </div>
+
                             <div
                                 className={`player-controls ${isPlaying ? 'faded' : ''}`}
                                 onClick={() => setIsPlaying(!isPlaying)}

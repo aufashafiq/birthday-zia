@@ -52,7 +52,7 @@ export default function AudioPlayer() {
     };
 
     return (
-        <div className="audio-control">
+        <div className="audio-control-corner">
             <audio
                 ref={audioRef}
                 src="/birthday-music.mp3"
@@ -61,15 +61,12 @@ export default function AudioPlayer() {
                 loop
             />
             <button
-                className={`audio-btn ${isPlaying ? "playing" : ""}`}
+                className={`audio-btn-corner ${isPlaying ? "playing" : ""}`}
                 onClick={togglePlay}
                 aria-label={isPlaying ? "Pause music" : "Play music"}
             >
                 {isPlaying ? "🔊" : "🔈"}
             </button>
-            <span className="audio-label">
-                {isPlaying ? "Playing..." : "Play Music"}
-            </span>
         </div>
     );
 }

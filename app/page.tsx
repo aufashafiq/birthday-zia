@@ -8,6 +8,13 @@ import DumpTitleSection from "./DumpTitleSection";
 import VlogDumpSection from "./VlogDumpSection";
 import RekomSection from "./RekomSection";
 import LetterSection from "./LetterSection";
+import HugSection from "./components/HugSection";
+import RainEffect from "./components/RainEffect";
+import DestinationsSection from "./components/DestinationsSection";
+import BTSSection from "./components/BTSSection";
+import HoldButton from "./components/HoldButton";
+import UnicornWishes from "./components/UnicornWishes";
+import BirthdayCard24 from "./components/BirthdayCard24";
 
 // Types
 interface MemoryEvent {
@@ -18,23 +25,7 @@ interface MemoryEvent {
   images: string[];
 }
 
-// Pencil data with names and colors
-const pencils = [
-  { name: "Alex", color: "#ef4444", message: "Happy birthday! Wishing you all the happiness in the world. May your day be filled with love and laughter! 🎂" },
-  { name: "James", color: "#f97316", message: "To an amazing person - may this year bring you everything you've dreamed of! Have a wonderful day! 🎉" },
-  { name: "Sarah", color: "#eab308", message: "Sending you the warmest birthday wishes! You deserve all the good things life has to offer! ✨" },
-  { name: "Mike", color: "#22c55e", message: "Another year wiser! Hope your birthday is as incredible as you are. Cheers to you! 🥳" },
-  { name: "Emma", color: "#14b8a6", message: "Happy Birthday! May your day be sprinkled with joy and your year be filled with blessings! 💕" },
-  { name: "David", color: "#3b82f6", message: "Wishing you a day filled with sweet moments and beautiful memories. Happy Birthday! 🌟" },
-  { name: "Lisa", color: "#6366f1", message: "To someone who makes the world brighter - Happy Birthday! Keep shining! ✨" },
-  { name: "Ryan", color: "#8b5cf6", message: "May all your birthday wishes come true! Have an amazing celebration! 🎁" },
-  { name: "Sophie", color: "#a855f7", message: "Happy Birthday! Here's to another year of adventures and happiness! 💫" },
-  { name: "Chris", color: "#ec4899", message: "Wishing you the happiest of birthdays! May this year be your best one yet! 🎈" },
-  { name: "Anna", color: "#f43f5e", message: "Happy Birthday to a truly wonderful person! Enjoy your special day! 💖" },
-  { name: "Tom", color: "#06b6d4", message: "Another trip around the sun! Wishing you joy, love, and lots of cake! 🍰" },
-  { name: "Nina", color: "#84cc16", message: "Happy Birthday! May your day be as special as you are to all of us! 🌈" },
-  { name: "Ben", color: "#f59e0b", message: "To endless possibilities and beautiful moments - Happy Birthday! 🎊" },
-];
+
 
 const bannerLetters = ["H", "A", "P", "P", "Y", " ", "B", "D", "A", "Y", "!"];
 
@@ -45,7 +36,7 @@ const sections = [
   { id: "cinematic-vlog", label: "Vlog" },
   { id: "vlog-dump-title", label: "Dump" },
   { id: "rekom", label: "Rekom" },
-  { id: "wishes", label: "Wishes" },
+  { id: "destinations", label: "Destinations" },
   { id: "finale", label: "Finale" },
 ];
 
@@ -55,29 +46,89 @@ const rotations = [-4, 2, -2, 3, -3, 1, -1, 4, -2, 3, -4, 2, -1, 3, -3, 1];
 export default function BirthdayScrapbook() {
   const [activeSection, setActiveSection] = useState("hero");
   const [isPlaying, setIsPlaying] = useState(false);
-  const [selectedWish, setSelectedWish] = useState<typeof pencils[0] | null>(null);
-  const [confetti, setConfetti] = useState<Array<{ id: number; x: number; y: number; color: string }>>([]);
+
+  const [confetti, setConfetti] = useState<Array<{
+    id: number;
+    x: number;
+    y: number;
+    color: string;
+    type?: 'fall' | 'firework';
+    dx?: string;
+    dy?: string;
+  }>>([]);
   const [memories, setMemories] = useState<MemoryEvent[]>([]);
   const [profilePicture, setProfilePicture] = useState<string | null>(null);
   const [selectedMemory, setSelectedMemory] = useState<MemoryEvent | null>(null);
   const [wasPlayingBeforeVlog, setWasPlayingBeforeVlog] = useState(false);
   const [letterOpen, setLetterOpen] = useState(false);
+  const [overlayStep, setOverlayStep] = useState<'intro' | 'hold'>('intro');
   const [showOverlay, setShowOverlay] = useState(true);
+  const [isFlashing, setIsFlashing] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
 
   const handleStart = () => {
     if (audioRef.current) {
       audioRef.current.volume = 0.25;
-      audioRef.current.play()
-        .then(() => {
-          setIsPlaying(true);
-          setShowOverlay(false);
-          triggerConfetti();
-        })
-        .catch(console.error);
-    } else {
-      setShowOverlay(false);
+      audioRef.current.play().catch(console.error);
     }
+    setOverlayStep('hold');
+  };
+
+  const triggerExplosion = (x: number, y: number) => {
+    const colors = ["#ef4444", "#f97316", "#eab308", "#22c55e", "#3b82f6", "#8b5cf6", "#ec4899", "#14b8a6"];
+    const newParticles: typeof confetti = [];
+
+    for (let i = 0; i < 50; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const velocity = 200 + Math.random() * 300; // Distance to travel
+      const tx = Math.cos(angle) * velocity;
+      const ty = Math.sin(angle) * velocity;
+
+      newParticles.push({
+        id: Date.now() + i + Math.random(),
+        x: x,
+        y: y,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        type: 'firework',
+        dx: `${tx}px`,
+        dy: `${ty}px`
+      });
+    }
+
+    setConfetti(prev => [...prev, ...newParticles]);
+  };
+
+  const handleReveal = () => {
+    setIsFlashing(true);
+
+    // Sync with flash phase
+    setTimeout(() => {
+      setIsPlaying(true);
+      setShowOverlay(false);
+
+      // Initial Center Explosion
+      triggerExplosion(window.innerWidth / 2, window.innerHeight / 2);
+
+      // Random explosions
+      const count = 5;
+      for (let i = 0; i < count; i++) {
+        setTimeout(() => {
+          const rx = Math.random() * window.innerWidth;
+          const ry = Math.random() * (window.innerHeight * 0.8);
+          triggerExplosion(rx, ry);
+        }, i * 300);
+      }
+
+      // Also trigger falling confetti
+      triggerConfetti();
+      setTimeout(triggerConfetti, 1000);
+
+      // Clear all after a while
+      setTimeout(() => setConfetti([]), 4000);
+    }, 150); // Small wait to let flash build up
+
+    // Clear flash after animation finishes
+    setTimeout(() => setIsFlashing(false), 1500);
   };
 
   // No more auto-play useEffect needed since we use the overlay
@@ -153,10 +204,10 @@ export default function BirthdayScrapbook() {
     }
   };
 
-  // Confetti explosion
+  // Confetti explosion (falling)
   const triggerConfetti = () => {
     const colors = ["#ef4444", "#f97316", "#eab308", "#22c55e", "#3b82f6", "#8b5cf6", "#ec4899", "#14b8a6"];
-    const newConfetti = [];
+    const newConfetti: typeof confetti = [];
 
     for (let i = 0; i < 100; i++) {
       newConfetti.push({
@@ -164,11 +215,11 @@ export default function BirthdayScrapbook() {
         x: Math.random() * window.innerWidth,
         y: -20,
         color: colors[Math.floor(Math.random() * colors.length)],
+        type: 'fall'
       });
     }
 
-    setConfetti(newConfetti);
-    setTimeout(() => setConfetti([]), 3000);
+    setConfetti(prev => [...prev, ...newConfetti]);
   };
 
   const handleNextMemory = () => {
@@ -190,6 +241,12 @@ export default function BirthdayScrapbook() {
       {/* Grid Background */}
       <div className="scrapbook-bg" />
 
+      {/* Flashbang transition */}
+      {isFlashing && <div className="flash-overlay" />}
+
+      {/* Cinematic Rain Effect */}
+      <RainEffect isLetterOpen={letterOpen} />
+
       {/* Opening Overlay */}
       <AnimatePresence>
         {showOverlay && (
@@ -205,11 +262,17 @@ export default function BirthdayScrapbook() {
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.5 }}
             >
-              <h1 className="opening-title">For Zia ✨</h1>
-              <p className="opening-subtitle">A little surprise for you...</p>
-              <button className="opening-btn" onClick={handleStart}>
-                Open 💌
-              </button>
+              {overlayStep === 'intro' ? (
+                <>
+                  <h1 className="opening-title">For Zia ✨</h1>
+                  <p className="opening-subtitle">A little surprise for you...</p>
+                  <button className="opening-btn" onClick={handleStart}>
+                    Open 💌
+                  </button>
+                </>
+              ) : (
+                <HoldButton onComplete={handleReveal} />
+              )}
             </motion.div>
           </motion.div>
         )}
@@ -263,8 +326,17 @@ export default function BirthdayScrapbook() {
             <motion.div
               className="polaroid"
               initial={{ opacity: 0, rotate: -10 }}
-              animate={{ opacity: 1, rotate: -3 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
+              animate={{
+                opacity: 1,
+                rotate: [-3, -1, -3],
+                y: [0, -10, 0]
+              }}
+              transition={{
+                opacity: { duration: 0.6, delay: 0.2 },
+                rotate: { duration: 5, repeat: Infinity, ease: "easeInOut" },
+                y: { duration: 4, repeat: Infinity, ease: "easeInOut" }
+              }}
+              whileHover={{ scale: 1.05, rotate: 0 }}
             >
               <div className="polaroid-tape" />
               <div className="polaroid-image">
@@ -344,6 +416,9 @@ export default function BirthdayScrapbook() {
         {/* ================== INTRO SECTION ================== */}
         <IntroSection />
 
+        {/* ================== UNICORN WISHES SECTION ================== */}
+        <UnicornWishes />
+
         {/* ================== MEMORIES SECTION ================== */}
         <MemoriesSection memories={memories} onSelectMemory={setSelectedMemory} />
 
@@ -359,85 +434,8 @@ export default function BirthdayScrapbook() {
         {/* ================== REKOM NOTE SECTION ================== */}
         <RekomSection />
 
-        {/* ================== WISHES SECTION ================== */}
-        <section id="wishes" className="section wishes">
-          <motion.h2
-            className="wishes-title"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            ✏️ The Writing Desk
-          </motion.h2>
-          <motion.p
-            className="wishes-subtitle"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            Click a pencil to read a birthday wish
-          </motion.p>
-
-          <motion.div
-            className="pencil-desk"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-          >
-            {pencils.map((pencil, i) => (
-              <motion.div
-                key={pencil.name}
-                className="pencil"
-                onClick={() => setSelectedWish(pencil)}
-                style={{ transform: `rotate(${(i - 7) * 3}deg)` }}
-                whileHover={{ scale: 1.1, y: -10 }}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.3, delay: i * 0.05 }}
-              >
-                <div
-                  className="pencil-tip"
-                  style={{ borderBottomColor: pencil.color }}
-                />
-                <div
-                  className="pencil-body"
-                  style={{ backgroundColor: pencil.color }}
-                >
-                  <span className="pencil-label">{pencil.name}</span>
-                </div>
-              </motion.div>
-            ))}
-          </motion.div>
-
-          {/* Wish Modal */}
-          <AnimatePresence>
-            {selectedWish && (
-              <motion.div
-                className="modal-overlay"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                onClick={() => setSelectedWish(null)}
-              >
-                <motion.div
-                  className="wish-modal"
-                  initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.9, y: 20 }}
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <button className="modal-close" onClick={() => setSelectedWish(null)}>×</button>
-                  <h3 className="wish-modal-title">Message from {selectedWish.name}</h3>
-                  <p className="wish-modal-text">{selectedWish.message}</p>
-                </motion.div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </section>
+        {/* ================== DESTINATIONS SECTION ================== */}
+        <DestinationsSection />
 
         {/* ================== FINALE SECTION ================== */}
         <section id="finale" className="section finale" onClick={triggerConfetti}>
@@ -520,13 +518,23 @@ export default function BirthdayScrapbook() {
             {confetti.map((piece) => (
               <div
                 key={piece.id}
-                className="confetti"
-                style={{
-                  left: piece.x,
-                  top: piece.y,
-                  backgroundColor: piece.color,
-                  animationDelay: `${Math.random() * 0.5}s`,
-                }}
+                className={piece.type === 'firework' ? "firework" : "confetti"}
+                style={
+                  piece.type === 'firework'
+                    ? {
+                      left: piece.x,
+                      top: piece.y,
+                      backgroundColor: piece.color,
+                      ["--dx" as string]: piece.dx,
+                      ["--dy" as string]: piece.dy,
+                    }
+                    : {
+                      left: piece.x,
+                      top: piece.y,
+                      backgroundColor: piece.color,
+                      animationDelay: `${Math.random() * 0.5}s`,
+                    }
+                }
               />
             ))}
           </div>
@@ -544,6 +552,14 @@ export default function BirthdayScrapbook() {
           }}
           onLetterClose={() => setLetterOpen(false)}
         />
+
+
+
+        {/* ================== UNICORN WISHES SECTION ================== */}
+        {!letterOpen && <HugSection />}
+
+        {/* ================== BTS SECTION ================== */}
+        {!letterOpen && <BTSSection />}
 
 
 
@@ -584,6 +600,9 @@ function IntroSection() {
           Today we celebrate the most <span className="highlight-pink">amazing</span> person
           — full of love, kindness, and <span className="highlight-blue">endless joy!</span>
         </motion.p>
+
+        {/* Birthday Card with Image */}
+        <BirthdayCard24 />
       </div>
     </section>
   );

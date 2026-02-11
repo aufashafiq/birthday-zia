@@ -18,6 +18,9 @@ export default function DumpTitleSection() {
                 <p className="dump-title-tagline">
                     Random moments, big vibes ✌️
                 </p>
+                <p className="dump-scroll-hint">
+                    (geser ke kanan untuk melihat video lainnya)
+                </p>
                 <motion.div
                     className="dump-title-deco"
                     animate={{ rotate: [0, 5, -5, 0] }}

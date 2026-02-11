@@ -1,0 +1,48 @@
+<svg width="400" height="400" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Capybara Body -->
+  <g id="capybara">
+    <ellipse cx="160" cy="220" rx="70" ry="90" fill="#C68E68"/>
+    <ellipse cx="160" cy="180" rx="60" ry="70" fill="#C68E68"/>
+    <!-- Capybara Ears -->
+    <circle cx="110" cy="160" r="15" fill="#C68E68"/>
+    <circle cx="210" cy="160" r="15" fill="#C68E68"/>
+    <circle cx="110" cy="160" r="8" fill="#8D5524"/>
+    <circle cx="210" cy="160" r="8" fill="#8D5524"/>
+    <!-- Capybara Face -->
+    <circle cx="140" cy="180" r="5" fill="#3E2723"/>
+    <circle cx="180" cy="180" r="5" fill="#3E2723"/>
+    <path d="M150 200 Q160 210 170 200" stroke="#3E2723" stroke-width="3" stroke-linecap="round"/>
+    <ellipse cx="140" cy="190" rx="6" ry="3" fill="#FFAB91" opacity="0.6"/>
+    <ellipse cx="180" cy="190" rx="6" ry="3" fill="#FFAB91" opacity="0.6"/>
+    <!-- Lemon on head (classic capy) -->
+    <ellipse cx="160" cy="130" rx="15" ry="10" fill="#FFEB3B" transform="rotate(-15 160 130)"/>
+  </g>
+
+  <!-- Unicorn Body (Hugging) -->
+  <g id="unicorn">
+    <ellipse cx="240" cy="220" rx="70" ry="90" fill="#FFFFFF"/>
+    <ellipse cx="240" cy="180" rx="65" ry="75" fill="#FFFFFF"/>
+    <!-- Unicorn Horn -->
+    <path d="M240 120 L230 150 L250 150 Z" fill="#FFD700"/>
+    <!-- Unicorn Mane -->
+    <path d="M240 120 Q210 140 200 180" stroke="#FF80AB" stroke-width="8" stroke-linecap="round"/>
+    <path d="M240 125 Q260 145 270 185" stroke="#80D8FF" stroke-width="8" stroke-linecap="round"/>
+    <path d="M250 130 Q280 160 280 200" stroke="#B388FF" stroke-width="8" stroke-linecap="round"/>
+    <!-- Unicorn Face -->
+    <circle cx="220" cy="180" r="5" fill="#3E2723"/>
+    <circle cx="260" cy="180" r="5" fill="#3E2723"/>
+    <path d="M230 200 Q240 210 250 200" stroke="#3E2723" stroke-width="3" stroke-linecap="round"/>
+    <ellipse cx="220" cy="190" rx="6" ry="3" fill="#FFAB91" opacity="0.6"/>
+    <ellipse cx="260" cy="190" rx="6" ry="3" fill="#FFAB91" opacity="0.6"/>
+  </g>
+
+  <!-- Hugging Arms -->
+  <path d="M110 240 Q130 260 160 240" stroke="#C68E68" stroke-width="15" stroke-linecap="round"/>
+  <path d="M290 240 Q270 260 240 240" stroke="#FFFFFF" stroke-width="15" stroke-linecap="round"/>
+  
+  <!-- Hearts -->
+  <g id="hearts">
+    <path d="M200 150 Q210 140 220 150 T240 150" fill="#FF4081" transform="scale(0.5) translate(180, 100)"/>
+    <text x="185" y="120" font-size="40">💖</text>
+  </g>
+</svg>

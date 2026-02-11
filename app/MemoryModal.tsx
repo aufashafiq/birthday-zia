@@ -228,55 +228,57 @@ export default function MemoryModal({ memory, onClose, onNextMemory, onPrevMemor
                             )}
                         </div>
 
-                        <div
-                            className="memory-display-container"
-                            onTouchStart={handleTouchStart}
-                            onTouchMove={handleTouchMove}
-                            onTouchEnd={handleTouchEnd}
-                        >
-                            {/* Navigation Arrows (Desktop) */}
-                            {memory.images.length > 1 && (
-                                <>
-                                    <button className="nav-arrow left" onClick={goPrev}>‹</button>
-                                    <button className="nav-arrow right" onClick={goNext}>›</button>
-                                </>
-                            )}
+                        <div className="memory-scroll-area">
+                            <div
+                                className="memory-display-container"
+                                onTouchStart={handleTouchStart}
+                                onTouchMove={handleTouchMove}
+                                onTouchEnd={handleTouchEnd}
+                            >
+                                {/* Navigation Arrows (Desktop) */}
+                                {memory.images.length > 1 && (
+                                    <>
+                                        <button className="nav-arrow left" onClick={goPrev}>‹</button>
+                                        <button className="nav-arrow right" onClick={goNext}>›</button>
+                                    </>
+                                )}
 
-                            <AnimatePresence custom={direction} mode="wait">
-                                <motion.div
-                                    key={currentIndex}
-                                    className="memory-image-wrapper"
-                                    custom={direction}
-                                    variants={slideVariants}
-                                    initial="enter"
-                                    animate="center"
-                                    exit="exit"
-                                    transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                                >
-                                    {isCurrentLoading && (
-                                        <div className="memory-loading-overlay">
-                                            <div className="memory-loading-spinner" />
-                                        </div>
-                                    )}
-                                    <img
-                                        src={memory.images[currentIndex]}
-                                        alt={`${memory.title} - Photo ${currentIndex + 1}`}
-                                        className="memory-main-image"
-                                        draggable={false}
-                                        style={{ opacity: isCurrentLoading ? 0 : 1, transition: 'opacity 0.3s ease' }}
-                                    />
-                                </motion.div>
-                            </AnimatePresence>
-                        </div>
+                                <AnimatePresence custom={direction} mode="wait">
+                                    <motion.div
+                                        key={currentIndex}
+                                        className="memory-image-wrapper"
+                                        custom={direction}
+                                        variants={slideVariants}
+                                        initial="enter"
+                                        animate="center"
+                                        exit="exit"
+                                        transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                                    >
+                                        {isCurrentLoading && (
+                                            <div className="memory-loading-overlay">
+                                                <div className="memory-loading-spinner" />
+                                            </div>
+                                        )}
+                                        <img
+                                            src={memory.images[currentIndex]}
+                                            alt={`${memory.title} - Photo ${currentIndex + 1}`}
+                                            className="memory-main-image"
+                                            draggable={false}
+                                            style={{ opacity: isCurrentLoading ? 0 : 1, transition: 'opacity 0.3s ease' }}
+                                        />
+                                    </motion.div>
+                                </AnimatePresence>
+                            </div>
 
-                        {/* Text Overlay */}
-                        <div className="memory-text-overlay">
-                            <h3 className="memory-title-neon">{memory.title}</h3>
-                            <p className="memory-desc-white">
-                                {memory.description || "Captured moments special buat kamu! ✨📸"}
-                            </p>
-                            <div className="slide-indicator">
-                                Slide {currentIndex + 1} / {memory.images.length}
+                            {/* Text Below Image */}
+                            <div className="memory-text-below">
+                                <h3 className="memory-title-neon">{memory.title}</h3>
+                                <p className="memory-desc-white" style={{ whiteSpace: 'pre-line' }}>
+                                    {memory.description || "Captured moments special buat kamu! ✨📸"}
+                                </p>
+                                <div className="slide-indicator">
+                                    Slide {currentIndex + 1} / {memory.images.length}
+                                </div>
                             </div>
                         </div>
                     </div>
