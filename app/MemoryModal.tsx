@@ -272,13 +272,13 @@ export default function MemoryModal({ memory, onClose, onNextMemory, onPrevMemor
 
                             {/* Text Below Image */}
                             <div className="memory-text-below">
+                                <div className="slide-indicator">
+                                    Slide {currentIndex + 1} / {memory.images.length}
+                                </div>
                                 <h3 className="memory-title-neon">{memory.title}</h3>
                                 <p className="memory-desc-white" style={{ whiteSpace: 'pre-line' }}>
                                     {memory.description || "Captured moments special buat kamu! ✨📸"}
                                 </p>
-                                <div className="slide-indicator">
-                                    Slide {currentIndex + 1} / {memory.images.length}
-                                </div>
                             </div>
                         </div>
                     </div>

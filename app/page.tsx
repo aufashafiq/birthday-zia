@@ -657,7 +657,6 @@ function MemoriesSection({
               initial={{ opacity: 0, y: 30 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.5, delay: 0.2 + i * 0.08 }}
-              whileHover={{ rotate: 0, scale: 1.04, y: -8 }}
               onClick={() => onSelectMemory(memory)}
             >
               <div className="memory-tape" />

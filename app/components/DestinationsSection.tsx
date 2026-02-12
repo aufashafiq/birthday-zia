@@ -1,5 +1,5 @@
-
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 
 const destinations = [
@@ -62,7 +62,13 @@ const destinations = [
 export default function DestinationsSection() {
     const ref = useRef(null);
     const isInView = useInView(ref, { once: true, margin: "-10%" });
-    const [showModal, setShowModal] = useState(false);
+    const [showWishlistModal, setShowWishlistModal] = useState(false);
+    const [selectedDest, setSelectedDest] = useState<typeof destinations[0] | null>(null);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     return (
         <section id="destinations" className="section destinations-section-apple" ref={ref}>
@@ -107,11 +113,15 @@ export default function DestinationsSection() {
                                 {/* 2. Content Area (Bottom) */}
                                 <div className="apple-card-content">
                                     <h3 className="apple-card-title">{dest.title}</h3>
+                                    <div className="apple-card-desc">
+                                        {dest.desc}
+                                    </div>
                                     <div
-                                        className="apple-card-desc"
-                                        dangerouslySetInnerHTML={{ __html: dest.desc }}
-                                    />
-                                    <div className="apple-learn-more">Lihat detail &gt;</div>
+                                        className="apple-learn-more"
+                                        onClick={() => setSelectedDest(dest)}
+                                    >
+                                        Lihat detail &gt;
+                                    </div>
                                 </div>
                             </motion.div>
                         ))}
@@ -126,45 +136,91 @@ export default function DestinationsSection() {
                     transition={{ duration: 0.6, delay: 0.8 }}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
-                    onClick={() => setShowModal(true)}
+                    onClick={() => setShowWishlistModal(true)}
                 >
                     Tambahkan Wishlist Destinasi +
                 </motion.button>
 
-                {/* Wishlist Modal */}
-                <AnimatePresence>
-                    {showModal && (
-                        <motion.div
-                            className="wishlist-overlay"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            onClick={() => setShowModal(false)}
-                        >
+                {/* Individual Destination Detail Modal */}
+                {mounted && createPortal(
+                    <AnimatePresence>
+                        {selectedDest && (
                             <motion.div
-                                className="wishlist-popup"
-                                initial={{ scale: 0.8, opacity: 0, y: 20 }}
-                                animate={{ scale: 1, opacity: 1, y: 0 }}
-                                exit={{ scale: 0.8, opacity: 0, y: 20 }}
-                                onClick={(e) => e.stopPropagation()}
+                                className="detail-overlay"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                onClick={() => setSelectedDest(null)}
                             >
-                                <div className="wishlist-message">
-                                    Yuk, kita agendain jalan-jalan lagi zii, kemana lagi yaa kitaa, hihii 🥹.
-                                    <br /><br />
-                                    Kangen jalan-jalan lagi sama kamu yang vibesnya ceria dan positive vibes inii 🤗.
-                                    <br /><br />
-                                    Kalo kamu ada ide mau jalan-jalan kemana lagi bisa rekom in aku langsung aja yaa ❤️ 🫂
-                                </div>
-                                <button
-                                    className="wishlist-close-btn"
-                                    onClick={() => setShowModal(false)}
+                                <motion.div
+                                    className="detail-popup"
+                                    initial={{ scale: 0.9, opacity: 0, y: 20 }}
+                                    animate={{ scale: 1, opacity: 1, y: 0 }}
+                                    exit={{ scale: 0.9, opacity: 0, y: 20 }}
+                                    onClick={(e) => e.stopPropagation()}
                                 >
-                                    Okeeyy 😆
-                                </button>
+                                    <div className="detail-modal-image-container">
+                                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                                        <img
+                                            src={selectedDest.image}
+                                            alt={selectedDest.title}
+                                            className="detail-modal-image"
+                                        />
+                                    </div>
+                                    <div className="detail-modal-content">
+                                        <h3 className="detail-modal-title">{selectedDest.title}</h3>
+                                        <div className="detail-modal-desc">
+                                            {selectedDest.desc}
+                                        </div>
+                                    </div>
+                                    <button
+                                        className="detail-close-btn"
+                                        onClick={() => setSelectedDest(null)}
+                                    >
+                                        Tutup
+                                    </button>
+                                </motion.div>
                             </motion.div>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
+                        )}
+                    </AnimatePresence>,
+                    document.body
+                )}
+
+                {/* Wishlist Modal */}
+                {mounted && createPortal(
+                    <AnimatePresence>
+                        {showWishlistModal && (
+                            <motion.div
+                                className="wishlist-overlay"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                onClick={() => setShowWishlistModal(false)}
+                            >
+                                <motion.div
+                                    className="wishlist-popup"
+                                    initial={{ scale: 0.8, opacity: 0, y: 20 }}
+                                    animate={{ scale: 1, opacity: 1, y: 0 }}
+                                    exit={{ scale: 0.8, opacity: 0, y: 20 }}
+                                    onClick={(e) => e.stopPropagation()}
+                                >
+                                    <div className="wishlist-message">
+                                        Nantiii kita bikin wishlist baruu yaa zii! Hmm enaknya kemana yaa kira-kira? Kamu ada rekomendasi gaa?
+                                        <br /><br />
+                                        Info2 ajaaa yaaa hehee🫶
+                                    </div>
+                                    <button
+                                        className="wishlist-close-btn"
+                                        onClick={() => setShowWishlistModal(false)}
+                                    >
+                                        Gasskeunn 🥳
+                                    </button>
+                                </motion.div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>,
+                    document.body
+                )}
             </div>
         </section>
     );

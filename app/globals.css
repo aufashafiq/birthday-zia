@@ -36,7 +36,6 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-snap-type: y proximity;
 }
 
 body {
@@ -87,7 +86,6 @@ body {
   /* Prevent horizontal overflow */
   max-width: 100vw;
   overflow-x: hidden;
-  scroll-snap-align: start;
 }
 
 /* Gradient transition overlays between sections */
@@ -652,15 +650,7 @@ body {
     0 4px 6px rgba(0, 0, 0, 0.08),
     0 8px 16px rgba(0, 0, 0, 0.04);
   cursor: pointer;
-  transition: all 0.35s cubic-bezier(0.22, 1, 0.36, 1);
   transform: rotate(var(--rotation, 0deg));
-}
-
-.memory-card-dynamic:hover {
-  box-shadow:
-    0 12px 24px rgba(0, 0, 0, 0.12),
-    0 24px 48px rgba(0, 0, 0, 0.08);
-  z-index: 2;
 }
 
 .memory-image-dynamic {
@@ -1563,12 +1553,6 @@ body {
   .memory-card-dynamic {
     padding: 6px;
     padding-bottom: 50px;
-    transform: none !important;
-  }
-
-  .memory-card-dynamic:hover {
-    transform: scale(1.02) !important;
-    z-index: 10;
   }
 
   /* Stacked Paper Effects */
@@ -3686,7 +3670,6 @@ body {
 }
 
 .slide-indicator {
-  margin-top: 5px;
   font-size: 0.8rem;
   color: rgba(255, 255, 255, 0.6);
   text-transform: uppercase;
@@ -3847,30 +3830,42 @@ body {
 
 /* Content Area */
 .apple-card-content {
-  padding: 32px 24px;
+  padding: 20px 16px;
+  /* Reduced padding for compact look */
   text-align: center;
   /* Center text like comparison page */
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  /* Tighter gap */
 }
 
 .apple-card-title {
   font-family: var(--font-heading);
-  font-size: 24px;
+  font-size: 20px;
+  /* Slightly smaller for densitys */
   font-weight: 700;
   color: #1d1d1f;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
   letter-spacing: -0.01em;
 }
 
 .apple-card-desc {
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1.5;
-  color: #1d1d1f;
-  /* Darker text */
-  margin-bottom: 12px;
+  color: #424245;
+  /* Soft dark */
+  margin-bottom: 8px;
+
+  /* Text Truncation - Max 3 lines */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  /* Standard property for compatibility */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .apple-card-desc strong {
@@ -3879,12 +3874,107 @@ body {
 }
 
 .apple-learn-more {
-  font-size: 14px;
+  font-size: 13px;
   color: #ff69b4;
-  /* Hotpink Link */
-  font-weight: 500;
+  /* Pink color */
+  font-weight: 600;
+  /* Bolder weight */
   margin-top: auto;
   cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.apple-learn-more:hover {
+  text-decoration: underline;
+  opacity: 0.8;
+}
+
+/* Detail Modal Styles */
+.detail-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.detail-popup {
+  background: rgba(255, 255, 255, 0.95);
+  width: 100%;
+  max-width: 500px;
+  border-radius: 32px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.detail-modal-image-container {
+  width: 100%;
+  height: 240px;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.detail-modal-image {
+  max-width: 60%;
+  max-height: 80%;
+  object-fit: contain;
+}
+
+.detail-modal-content {
+  padding: 24px;
+  text-align: center;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.detail-modal-title {
+  font-family: var(--font-heading);
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: #1d1d1f;
+}
+
+.detail-modal-desc {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #424245;
+  white-space: pre-line;
+  /* Respect user's line breaks */
+}
+
+.detail-close-btn {
+  margin: 16px 24px 24px;
+  background: #ffb7c5;
+  /* Pink pastel */
+  color: white;
+  border: none;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.detail-close-btn:hover {
+  background: #ff99aa;
+  /* Slightly darker pink for hover */
+  transform: translateY(-1px);
 }
 
 /* Wishlist Button - Floating Style (Pink) */
@@ -4602,13 +4692,7 @@ body {
 /* ===========================================
    UNICORN WISHES SECTION
    =========================================== */
-.unicorn-wishes-section {
-  background: linear-gradient(180deg, #fff0f5 0%, #e3f2fd 100%);
-  padding: 80px 20px;
-  position: relative;
-  overflow: hidden;
-  text-align: center;
-}
+/* Merged with updated version below */
 
 .wishes-container {
   max-width: 1000px;
@@ -4749,9 +4833,9 @@ body {
    UNICORN WISHES SECTION (UPDATED)
    =========================================== */
 .unicorn-wishes-section {
-  /* Pink/Purple Pastel Gradient */
-  background: linear-gradient(180deg, #F3E5F5 0%, #FCE4EC 100%);
-  padding: 60px 20px;
+  /* Pink/Purple Pastel Gradient - with transparent start for smooth transition */
+  background: linear-gradient(180deg, transparent 0%, #F3E5F5 100px, #FCE4EC 100%);
+  padding: 80px 20px;
   position: relative;
   overflow: hidden;
   text-align: center;
