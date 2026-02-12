@@ -15,6 +15,7 @@ import BTSSection from "./components/BTSSection";
 import HoldButton from "./components/HoldButton";
 import UnicornWishes from "./components/UnicornWishes";
 import BirthdayCard24 from "./components/BirthdayCard24";
+import FavoritesSection from "./components/FavoritesSection";
 
 // Types
 interface MemoryEvent {
@@ -37,6 +38,7 @@ const sections = [
   { id: "vlog-dump-title", label: "Dump" },
   { id: "rekom", label: "Rekom" },
   { id: "destinations", label: "Destinations" },
+  { id: "favorites", label: "Favorites" },
   { id: "finale", label: "Finale" },
 ];
 
@@ -436,6 +438,9 @@ export default function BirthdayScrapbook() {
 
         {/* ================== DESTINATIONS SECTION ================== */}
         <DestinationsSection />
+
+        {/* ================== FAVORITES SECTION ================== */}
+        <FavoritesSection />
 
         {/* ================== FINALE SECTION ================== */}
         <section id="finale" className="section finale" onClick={triggerConfetti}>

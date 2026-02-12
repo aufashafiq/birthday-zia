@@ -666,7 +666,8 @@ body {
 .memory-image-dynamic {
   width: 100%;
   aspect-ratio: 1;
-  background: linear-gradient(135deg, #fce7f3 0%, #fbcfe8 100%);
+  background: white;
+  /* Changed from pink gradient to white */
   overflow: hidden;
 }
 
@@ -1672,9 +1673,8 @@ body {
 
   .audio-player {
     bottom: 20px;
-    right: 50%;
-    transform: translateX(50%);
-    /* Center audio button */
+    right: 20px;
+    /* Center audio button - Removed */
     padding: 8px 16px;
     white-space: nowrap;
     width: fit-content;
@@ -1682,7 +1682,7 @@ body {
   }
 
   .audio-player:hover {
-    transform: translateX(50%) scale(1.05);
+    transform: scale(1.05);
   }
 
   /* ================== VLOG SECTION ================== */
@@ -4311,6 +4311,10 @@ body {
   height: 120px;
   cursor: pointer;
   transform-origin: bottom center;
+  /* Remove blue highlight on touch */
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  touch-action: manipulation;
 }
 
 /* Lid */
@@ -5076,4 +5080,163 @@ body {
 /* Ensure bubble is above sticker */
 .speech-bubble-readable {
   z-index: 10;
+}
+
+/* ===========================================
+   FAVORITES SECTION
+   =========================================== */
+
+.favorites-section {
+  padding: 80px 20px;
+  min-height: auto;
+  position: relative;
+  z-index: 1;
+}
+
+.favorites-container {
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+}
+
+.favorites-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.favorites-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  width: 100%;
+  padding: 10px;
+}
+
+/* Apple Style Card */
+/* Apple Style Card */
+/* Apple Style Card */
+/* Apple Style Card */
+.favorite-card {
+  background: white;
+  border-radius: 24px;
+  padding: 4px;
+  /* Extreme tight padding */
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  box-shadow: 0 4px 12px rgba(236, 72, 153, 0.08);
+  /* Pinkish shadow */
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: row;
+  /* Horizontal Layout */
+  align-items: center;
+  /* Center vertically */
+  gap: 16px;
+  /* Slightly increased gap */
+  /* height: 100%; Removed to allow shrink-wrap */
+  position: relative;
+  overflow: hidden;
+  cursor: default;
+}
+
+.favorite-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 30px rgba(236, 72, 153, 0.15);
+}
+
+.favorite-icon-wrapper {
+  width: 140px;
+  /* Larger image */
+  height: 140px;
+  /* Larger image */
+  background: #fdf2f8;
+  /* pink-50 */
+  border-radius: 20px;
+  /* Slightly adjusted radius */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  /* Prevent shrinking */
+  overflow: hidden;
+  margin-bottom: 0;
+  /* Remove bottom margin */
+}
+
+.favorite-icon {
+  font-size: 48px;
+}
+
+.favorite-image-3d {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  /* Fix zoom issue */
+  border-radius: 16px;
+  /* Rounded corners for image */
+  transition: transform 0.3s ease;
+  /* Removed padding to make image larger */
+}
+
+.favorite-card:hover .favorite-image-3d {
+  transform: scale(1.1);
+}
+
+.favorite-content {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.favorite-title {
+  font-family: var(--font-heading);
+  font-size: 20px;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 8px;
+  text-align: left;
+  /* Align text to left */
+}
+
+.favorite-desc {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #6b7280;
+  text-align: left;
+  /* Align text to left */
+}
+
+.favorite-desc strong {
+  color: #db2777;
+  /* pink-600 */
+  font-weight: 600;
+}
+
+
+
+.favorites-closing {
+  margin-top: 40px;
+  text-align: center;
+  max-width: 600px;
+  font-family: var(--font-handwritten);
+  font-size: 18px;
+  color: #9ca3af;
+  font-style: italic;
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .favorites-grid {
+    grid-template-columns: 1fr;
+    /* Stack on mobile */
+  }
+
+
+
+  .favorite-title {
+    font-size: 18px;
+  }
 }

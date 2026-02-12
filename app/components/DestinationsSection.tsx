@@ -6,55 +6,55 @@ const destinations = [
     {
         id: 'kotu',
         title: 'Kota Tua (Old Batavia)',
-        desc: 'Agak <strong>random sih</strong>, tapi rasanya <strong>tidak afdol</strong> kalau kita belum pernah jalan-jalan ke <strong>Kota Tua</strong> selama di Jakarta. Apalagi menjelang semester akhir. Suka banget di sini karena <strong>vibes Batavia-nya</strong>. Next, kita ke Ikonik Minang yah!',
+        desc: 'Kita ke kota tua karna nemenin kamu bikin vlog wkwkwk, bukan ke kota tua aja, kita lanjut ke musium juga, beli kacamata couple, nyobain kerak telor, seruuu bangeeettt',
         image: '/images/map_kota_tua_3d_1770810117070.png'
     },
     {
         id: 'ptiq',
         title: 'Universitas PTIQ Jakarta',
-        desc: '<strong>Kampus tercinta!</strong> Ini mah sudah jadi <strong>langganan</strong>. Kalau ke kampus mau ke mana-mana, atau <strong>lagi lelah</strong>, bisa numpang sama kamu hehe. Maafin aku ya kalau lagi ada kegiatan kampus suka numpang ke <strong>kosan kamu</strong>, Zi. Hihi.',
+        desc: 'Kampus kitaa, pas waktu awal2 kita blm terlalu dekett sihh, kita deket pas mau akhir semester huhuu, udh keinget juga sama kosan lama kamuu, banyak bgtt kesimpen kenangan disitu, jadi iangen dehh🥲🤧',
         image: '/images/map_ptiq_3d_1770810132798.png'
     },
     {
         id: 'bandung',
         title: 'Bandung City',
-        desc: '<strong>Kulineran banyak</strong>, dapat Jukut juga rekomendasi dari kamu. Nyobain <strong>Nasi Ayam SPG</strong> dan sebagainya. Sempat ke Rumah Dilan Milea juga, cuma kamu nggak turun buat foto huhu. Jadinya aku sama <strong>Tawes saja deh</strong> yang turun.',
+        desc: 'Kulineran banyak, dapat Jukut juga pertama kali, dan langsung jadi fav si tawes tauuu wkwwk. Nyobain Nasi Ayam SPG dan masihh banyakk lagi. Tempa makan apatuh yaa yang terbyata zonk wkwwkk menang viral tiktok doang, taunya biasa aja, mana mahal lagii jirlahh🤧 Sempat ke Rumah Dilan Milea juga, cuma kamu nggak turun buat foto huhu karena lagi ngurus masalah rumah tangga ama si ituu. Jadinya aku sama Tawes saja deh yang turun.',
         image: '/images/map_bandung_3d_1770810149015.png'
     },
     {
         id: 'kawah_putih',
         title: 'Kawah Putih Bandung',
-        desc: 'Pas lagi jalan-jalan bareng <strong>double date</strong> sama Fawas. Ini <strong>seru banget!</strong> Explore Bandung ditambah <strong>vibes kamu yang ceria</strong>. Kita jadi pernah hiking meskipun nge-cheat pakai <strong>mobil start zone-nya</strong> wkwk.',
+        desc: 'Ini kita telat banguunn😭😭🤣. Ngomongnya mah mau berangkat subuh wkwkwk, eh jadinya jam 9an baru nyampe hahaha, mana lagi berkabut😅 Kita jadi pernah hiking meskipun nge-cheat pake jalur cepat hahaaha',
         image: '/images/map_kawah_putih_3d_1770810186413.png'
     },
     {
         id: 'moi',
         title: 'Mall of Indonesia (MOI)',
-        desc: 'Jauh-jauh ke <strong>MOI pakai Transjakarta</strong> (yang mana aku baru tahu kalau mall ini <strong>dekat rumah aku</strong>) buat nyobain salah satu <strong>wishlist makanan</strong> kita ya, Zi. Sekalian foto-foto estetik di <strong>mall abu-abu ini</strong> hihi.',
+        desc: 'Jauh-jauh ke MOI pakai Transjakarta (yang mana aku baru tahu kalau mall ini dekat rumah aku) buat nyobain salah satu wishlist makanan kita ya, chikuro (jadi pengen chikuro lagii). Ga lupa sebelum pulang kita beli eskrim hehee. Sekalian foto-foto estetik di mall dehh.',
         image: '/images/map_moi_3d_new.png'
     },
     {
         id: 'aeon',
         title: 'AEON Mall',
-        desc: 'Sebenarnya ini salah satu tempat yang <strong>membingungkan sih</strong> kalau dicari destinasi. Kalau mau ke mall ya <strong>ke AEON saja</strong>, karena banyak <strong>kulineran</strong> yang bisa kita cobain hehe.',
+        desc: 'Sebenarnya ini salah satu tempat andalan kalau lagi bingung cari destinasi. Ujung2nya ke AEON aja, sialnya banyak kulineran yang bisa kita cobain hehe.',
         image: '/images/map_aeon_3d_1770810301520.png'
     },
     {
         id: 'gbk',
         title: 'Gelora Bung Karno (GBK)',
-        desc: 'Waktu itu iseng mau <strong>olahraga dan jogging bareng</strong>, sekalian explore <strong>vibes hidup sehat</strong> aktivitas gedung perkantoran di pagi hari.',
+        desc: 'Ke GBK joging tanpa wacana2 kitaaa yaa, asliii ngerasa bangga bgt ini aku jadi morning person wkwkwk',
         image: '/images/map_gbk_3d_1770810245541.png'
     },
     {
         id: 'rumah',
         title: 'Rumah Aku',
-        desc: 'Ini <strong>lucu banget sih</strong>. Waktu itu kamu <strong>singgah ke rumah aku</strong> karena kebetulan ada acara di daerah Cakung dan sempat mampir. Maaf ya kalau hidangan dan pelayanan dari aku <strong>kurang memuaskan</strong> buat kamu, Zi.',
+        desc: 'Ini lucu banget sih. Pas kamu main ke rumah aku, ketemu sama keluarga aku, seneng bangeett bisa ajak kamu ke rumah dan ketemu keluarga akuu, anggap aja keluarga sendiri yaa ziii🫶',
         image: '/images/map_rumah_3d_1770810317905.png'
     },
     {
         id: 'rri',
         title: 'Radio Republik Indonesia',
-        desc: 'Hehe, ini waktu <strong>magang bareng</strong> sama kamu. Kita sering naik <strong>TJ ke Jakarta Pusat PP</strong> tiap hari. Aku masih numpang di <strong>kosan kamu</strong> hihi. Tapi karena sekosan, kita jadi makin akrab deh di sini.',
+        desc: 'Hehe, ini waktu magang bareng sama kamu. Dimana semua kedekatan kita berawal, dari magang ini. Aku ikut ngekos di kontrakan kamu. Kita sering naik TJ ke Jakarta Pusat PP tiap hari. Aku masih numpang di kosan kamu hihi. Tapi karena sekosan, kita jadi makin akrab deh di sini. Aaaaa seruu bangettt jadi pengen ulang, tapi kita berantem juga disinii, inget gasiii? Sampe diem2an berapa hari yaa? Tapi ujung2nya kita nangis2ann huhuuu🤧🥲😭🙏🏻',
         image: '/images/map_rri_3d_final_1770813505790.png'
     }
 ];
